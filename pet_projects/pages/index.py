@@ -1,9 +1,9 @@
 import reflex as rx
 
-from ..templates import template
+from ..templates import general_template
 
 
-@template(route="/", title="Index Page")
+@general_template(route="/", title="Index Page")
 def index() -> rx.Component:
     return rx.flex(
         rx.text("sex porno"),

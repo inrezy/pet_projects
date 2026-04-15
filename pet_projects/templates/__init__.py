@@ -1,3 +1,3 @@
-from .template import template
+from .general import general_template
 
-__all__ = ["template"]
+__all__ = ["general_template"]

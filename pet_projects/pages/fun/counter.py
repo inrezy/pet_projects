@@ -1,11 +1,11 @@
 import reflex as rx
 
-from ...templates import template
+from ...templates import general_template
 
 from ...states import CounterState
 
 
-@template(route="/fun/counter", title="Counter")
+@general_template(route="/fun/counter", title="Counter")
 def counter() -> rx.Component:
     return rx.hstack(
         rx.vstack(

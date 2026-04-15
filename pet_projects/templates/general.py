@@ -12,7 +12,7 @@ default_meta = [
     }
 ]
 
-def template(
+def general_template(
     route: str | None = None,
     title: str | None = None,
     description: str | None = None,
