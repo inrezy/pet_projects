@@ -26,14 +26,6 @@ class CounterState(rx.State):
 
     min_limit: int = -100
     max_limit: int = 100
-
-    @rx.event
-    def increment(self, delta: int):
-        self.count = max(self.min_limit, min(self.count + delta, self.max_limit))
-
-    @rx.event
-    def decrement(self, delta: int):
-        self.count = max(self.min_limit, min(self.count - delta, self.max_limit))
  
     @rx.event
     def set_first_value(self, value: str):
@@ -58,31 +50,18 @@ class CounterState(rx.State):
 
         while True:
             async with self:
+                if self.count >= self.positive_autoclick_max_value or self.positive_autoclick_cooldown <= 0:
+                    self.positive_autoclick_switched = False
+
+                    break
+
+            await asyncio.sleep(self.positive_autoclick_cooldown)
+
+            async with self:
                 if not self.positive_autoclick_switched:
                     break
 
-                if self.positive_autoclick_cooldown <= 0:
-                    self.positive_autoclick_switched = False
-
-                    yield rx.toast.error("Cooldown can't be lower than 1.")
-
-                    break
-
-                if self.count >= self.positive_autoclick_max_value:
-                    self.positive_autoclick_switched = False
-
-                    yield rx.toast.error("Maximum value can't be lower than or equal to count.")
-
-                    break
-
-                if self.count == self.max_limit:
-                    self.positive_autoclick_switched = False
-
-                    break
-
                 self.count = max(self.min_limit, min(self.count + self.positive_autoclick_value, self.max_limit))
-
-            await asyncio.sleep(self.positive_autoclick_cooldown)
 
     @rx.event(background=True)
     async def switch_negative_autoclick(self):
@@ -91,31 +70,18 @@ class CounterState(rx.State):
 
         while True:
             async with self:
+                if self.count <= self.negative_autoclick_min_value or self.negative_autoclick_cooldown <= 0:
+                    self.negative_autoclick_switched = False
+
+                    break
+
+            await asyncio.sleep(self.negative_autoclick_cooldown)
+
+            async with self:
                 if not self.negative_autoclick_switched:
                     break
 
-                if self.negative_autoclick_cooldown <= 0:
-                    self.negative_autoclick_switched = False
-
-                    yield rx.toast.error("Cooldown can't be lower than 1.")
-
-                    break
-
-                if self.count <= self.negative_autoclick_min_value:
-                    self.negative_autoclick_switched = False
-
-                    yield rx.toast.error("Minimum value can't be greater than or equal to count.")
-
-                    break
-
-                if self.count == self.min_limit:
-                    self.negative_autoclick_switched = False
-
-                    break
-
                 self.count = max(self.min_limit, min(self.count - self.negative_autoclick_value, self.max_limit))
-
-            await asyncio.sleep(self.negative_autoclick_cooldown)
 
     @rx.event
     def set_positive_autoclick_cooldown(self, value: str):
@@ -143,11 +109,11 @@ class CounterState(rx.State):
 
     @rx.event
     def randomize_values(self, min_value: int, max_value: int):
-        if min_value > max_value:
+        try:
+            self.first_value = random.randint(min_value, max_value)
+            self.second_value = random.randint(min_value, max_value)
+        except ValueError:
             yield rx.toast.error("Minimum value shouldn't be greater than maximum value.")
-
-        self.first_value = random.randint(min_value, max_value)
-        self.second_value = random.randint(min_value, max_value)
 
     @rx.event
     def set_random_min_value(self, value: str):

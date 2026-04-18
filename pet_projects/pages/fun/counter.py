@@ -10,25 +10,29 @@ def counter() -> rx.Component:
     return rx.hstack(
         rx.vstack(
             rx.card(
-                rx.text(
-                    CounterState.count,
-                    size='9',
-                    weight='medium',
-                    align='center'
+                rx.center(
+                    rx.text(
+                        CounterState.count,
+                        size='9',
+                        weight='medium'
+                    ),
+                    height='100%'
                 ),
-                width='100%'
+                width='100%',
+                flex_grow='1'
             ),
             rx.hstack(
                 rx.card(
                     rx.vstack(
                         rx.input(
-                            on_change=CounterState.set_first_value,
-                            value=CounterState.first_value
+                            value=CounterState.first_value,
+                            type='number',
+                            on_change=CounterState.set_first_value
                         ),
                         rx.button(
                             "Decrement",
                             color_scheme='red',
-                            on_click=lambda: CounterState.decrement(CounterState.first_value),
+                            on_click=lambda: CounterState.set_count(CounterState.count - CounterState.first_value),
                             disabled=CounterState.count <= CounterState.min_limit,
                             width='100%'
                         )
@@ -37,13 +41,14 @@ def counter() -> rx.Component:
                 rx.card(
                     rx.vstack(
                         rx.input(
-                            on_change=CounterState.set_second_value,
-                            value=CounterState.second_value
+                            value=CounterState.second_value,
+                            type='number',
+                            on_change=CounterState.set_second_value
                         ),
                         rx.button(
                             "Increment",
                             color_scheme='grass',
-                            on_click=lambda: CounterState.increment(CounterState.second_value),
+                            on_click=lambda: CounterState.set_count(CounterState.count + CounterState.second_value),
                             disabled=CounterState.count >= CounterState.max_limit,
                             width='100%'
                         )
@@ -95,159 +100,185 @@ def counter() -> rx.Component:
                 rx.hstack(
                     rx.button(
                         "Clear",
-                        color_scheme='blue',
                         on_click=lambda: CounterState.set_count(0),
                         flex_grow='1'
                     ),
-                    rx.icon_button(
-                        rx.icon("repeat"),
-                        color_scheme='blue',
-                        on_click=CounterState.swap_values
+                    rx.tooltip(
+                        rx.icon_button(
+                            rx.icon("repeat"),
+                            on_click=CounterState.swap_values
+                        ),
+                        content="Swap Values"
                     )
                 ),
                 width='100%'
             ),
-            align='center'
+            align='center',
+            height='inherit'
         ),
-        rx.vstack(
-            rx.hstack(
-                rx.card(
-                    rx.vstack(
-                        rx.hstack(
-                            rx.switch(
-                                checked=CounterState.negative_autoclick_switched,
-                                on_change=CounterState.switch_negative_autoclick
-                            ),
-                            rx.text("Negative Auto-Click", weight='medium'),
-                            width='100%',
-                            justify='center',
-                            align='center'
+        rx.grid(
+            rx.card(
+                rx.vstack(
+                    rx.hstack(
+                        rx.switch(
+                            checked=CounterState.negative_autoclick_switched,
+                            on_change=CounterState.switch_negative_autoclick
                         ),
-                        rx.divider(),
-                        rx.hstack(
-                            rx.text("Cooldown:", width='5.5rem'),
-                            rx.input(
-                                value=CounterState.negative_autoclick_cooldown,
-                                on_change=CounterState.set_negative_autoclick_cooldown
-                            ),
-                            align='center'
+                        rx.text("Negative Auto-Click", weight='medium'),
+                        width='100%',
+                        justify='center',
+                        align='center'
+                    ),
+                    rx.divider(),
+                    rx.hstack(
+                        rx.text("Cooldown (s):"),
+                        rx.input(
+                            value=CounterState.negative_autoclick_cooldown,
+                            type='number',
+                            on_change=CounterState.set_negative_autoclick_cooldown
                         ),
-                        rx.hstack(
-                            rx.text("Min. Value:", width='5.5rem'),
-                            rx.input(
-                                value=CounterState.negative_autoclick_min_value,
-                                on_change=CounterState.set_negative_autoclick_min_value
-                            ),
-                            align='center'
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.hstack(
+                        rx.text("Min. Value:"),
+                        rx.input(
+                            value=CounterState.negative_autoclick_min_value,
+                            type='number',
+                            on_change=CounterState.set_negative_autoclick_min_value
                         ),
-                        rx.hstack(
-                            rx.text("Value:", width='5.5rem'),
-                            rx.input(
-                                value=CounterState.negative_autoclick_value,
-                                on_change=CounterState.set_negative_autoclick_value
-                            ),
-                            align='center'
-                        )
-                    )
-                ),
-                rx.card(
-                    rx.vstack(
-                        rx.hstack(
-                            rx.switch(
-                                checked=CounterState.positive_autoclick_switched,
-                                on_change=CounterState.switch_positive_autoclick
-                            ),
-                            rx.text("Positive Auto-Click", weight='medium'),
-                            width='100%',
-                            justify='center',
-                            align='center'
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.hstack(
+                        rx.text("Value:"),
+                        rx.input(
+                            value=CounterState.negative_autoclick_value,
+                            type='number',
+                            on_change=CounterState.set_negative_autoclick_value
                         ),
-                        rx.divider(),
-                        rx.hstack(
-                            rx.text("Cooldown:", width='5.5rem'),
-                            rx.input(
-                                value=CounterState.positive_autoclick_cooldown,
-                                on_change=CounterState.set_positive_autoclick_cooldown
-                            ),
-                            align='center'
-                        ),
-                        rx.hstack(
-                            rx.text("Max. Value:", width='5.5rem'),
-                            rx.input(
-                                value=CounterState.positive_autoclick_max_value,
-                                on_change=CounterState.set_positive_autoclick_max_value
-                            ),
-                            align='center'
-                        ),
-                        rx.hstack(
-                            rx.text("Value:", width='5.5rem'),
-                            rx.input(
-                                value=CounterState.positive_autoclick_value,
-                                on_change=CounterState.set_positive_autoclick_value
-                            ),
-                            align='center'
-                        )
+                        width='100%',
+                        align='center',
+                        justify='between'
                     )
                 )
             ),
-            rx.hstack(
-                rx.card(
-                    rx.vstack(
-                        rx.text("Randomizator", weight='medium'),
-                        rx.divider(),
-                        rx.vstack(
-                            rx.hstack(
-                                rx.text("Min. Value:", width='5.5rem'),
-                                rx.input(
-                                    value=CounterState.random_min_value,
-                                    on_change=CounterState.set_random_min_value
-                                ),
-                                align='center'
-                            ),
-                            rx.hstack(
-                                rx.text("Max. Value:", width='5.5rem'),
-                                rx.input(
-                                    value=CounterState.random_max_value,
-                                    on_change=CounterState.set_random_max_value
-                                ),
-                                align='center'
-                            ),
-                            rx.button(
-                                "Randomize",
-                                color_scheme='blue',
-                                on_click=lambda: CounterState.randomize_values(CounterState.random_min_value, CounterState.random_max_value),
-                                width='100%'
-                            )
+            rx.card(
+                rx.vstack(
+                    rx.hstack(
+                        rx.switch(
+                            checked=CounterState.positive_autoclick_switched,
+                            on_change=CounterState.switch_positive_autoclick
                         ),
+                        rx.text("Positive Auto-Click", weight='medium'),
+                        width='100%',
+                        justify='center',
                         align='center'
-                    )
-                ),
-                rx.card(
-                    rx.vstack(
-                        rx.text("Other", weight='medium'),
-                        rx.divider(),
-                        rx.vstack(
-                            rx.hstack(
-                                rx.text("Min. Limit:", width='5.5rem'),
-                                rx.input(
-                                    value=CounterState.min_limit,
-                                    on_change=CounterState.set_min_limit
-                                ),
-                                align='center'
-                            ),
-                            rx.hstack(
-                                rx.text("Max. Limit:", width='5.5rem'),
-                                rx.input(
-                                    value=CounterState.max_limit,
-                                    on_change=CounterState.set_max_limit
-                                ),
-                                align='center'
-                            )
+                    ),
+                    rx.divider(),
+                    rx.hstack(
+                        rx.text("Cooldown (s):"),
+                        rx.input(
+                            value=CounterState.positive_autoclick_cooldown,
+                            type='number',
+                            on_change=CounterState.set_positive_autoclick_cooldown
                         ),
-                        align='center'
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.hstack(
+                        rx.text("Max. Value:"),
+                        rx.input(
+                            value=CounterState.positive_autoclick_max_value,
+                            type='number',
+                            on_change=CounterState.set_positive_autoclick_max_value
+                        ),
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.hstack(
+                        rx.text("Value:"),
+                        rx.input(
+                            value=CounterState.positive_autoclick_value,
+                            type='number',
+                            on_change=CounterState.set_positive_autoclick_value
+                        ),
+                        width='100%',
+                        align='center',
+                        justify='between'
                     )
                 )
-            )
+            ),
+            rx.card(
+                rx.vstack(
+                    rx.text("Randomizator", weight='medium'),
+                    rx.divider(),
+                    rx.hstack(
+                        rx.text("Min. Value:"),
+                        rx.input(
+                            value=CounterState.random_min_value,
+                            type='number',
+                            on_change=CounterState.set_random_min_value
+                        ),
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.hstack(
+                        rx.text("Max. Value:"),
+                        rx.input(
+                            value=CounterState.random_max_value,
+                            type='number',
+                            on_change=CounterState.set_random_max_value
+                        ),
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.button(
+                        "Randomize",
+                        on_click=lambda: CounterState.randomize_values(CounterState.random_min_value, CounterState.random_max_value),
+                        width='100%'
+                    ),
+                    align='center'
+                )
+            ),
+            rx.card(
+                rx.vstack(
+                    rx.text("Other", weight='medium'),
+                    rx.divider(),
+                    rx.hstack(
+                        rx.text("Min. Limit:"),
+                        rx.input(
+                            value=CounterState.min_limit,
+                            type='number',
+                            on_change=CounterState.set_min_limit
+                        ),
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    rx.hstack(
+                        rx.text("Max. Limit:"),
+                        rx.input(
+                            value=CounterState.max_limit,
+                            type='number',
+                            on_change=CounterState.set_max_limit
+                        ),
+                        width='100%',
+                        align='center',
+                        justify='between'
+                    ),
+                    align='center'
+                )
+            ),
+            columns='2',
+            spacing='3'
         ),
-        justify='center'
+        justify='center',
+        height='100%'
     )
