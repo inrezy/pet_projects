@@ -32,6 +32,7 @@ def guess_number() -> rx.Component:
                 rx.vstack(
                     rx.input(
                         value=GuessNumberState.answer,
+                        type='number',
                         on_change=GuessNumberState.set_answer,
                         width='100%'
                     ),
@@ -54,12 +55,14 @@ def guess_number() -> rx.Component:
                     rx.hstack(
                         rx.input(
                             value=GuessNumberState.min_limit,
+                            type='number',
                             on_change=GuessNumberState.set_min_limit,
                             flex_grow='1'
                         ),
                         rx.text("and"),
                         rx.input(
                             value=GuessNumberState.max_limit,
+                            type='number',
                             on_change=GuessNumberState.set_max_limit,
                             flex_grow='1'
                         ),

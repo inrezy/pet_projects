@@ -30,14 +30,16 @@ class GuessNumberState(rx.State):
     @rx.event
     def check_answer(self):
         match self.answer:
-            case answer if answer > self.secret:
+            case answer if answer > self.secret and (self.min_limit <= answer <= self.max_limit):
                 self.message = "Too high!"
 
                 self.attempts += 1
-            case answer if answer < self.secret:
+            case answer if answer < self.secret and (self.min_limit <= answer <= self.max_limit):
                 self.message = "Too low!"
 
                 self.attempts += 1
+            case answer if not (self.min_limit <= answer <= self.max_limit):
+                self.message = "Is out of bounds."
             case answer if answer == self.secret:
                 self.message = "You win!"
 
@@ -46,9 +48,14 @@ class GuessNumberState(rx.State):
 
     @rx.event
     def start_game(self):
-        self.message = "Start guessing..."
+        try:
+            self.secret = random.randint(self.min_limit, self.max_limit)
 
-        self.attempts = 0
-        self.secret_guessed = False
+            self.message = "Start guessing..."
 
-        self.secret = random.randint(self.min_limit, self.max_limit)
+            self.attempts = 0
+            self.secret_guessed = False
+
+            yield rx.toast.success("Game started!")
+        except ValueError:
+            yield rx.toast.error("Minimum limit shouldn't be greater than maximum limit.")
