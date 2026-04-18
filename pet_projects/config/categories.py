@@ -18,6 +18,11 @@ CATEGORIES: List[Category] = [
                 "name": "Counter",
                 "description": "customizable counter hehe",
                 "href": "/fun/counter"
+            },
+            {
+                "name": "Guess Number",
+                "description": "general game you know",
+                "href": "/fun/guess_number"
             }
         ]
     }
