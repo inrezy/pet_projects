@@ -3,7 +3,7 @@ import reflex as rx
 from ..templates import general_template
 
 
-@general_template(route="/", title="Index Page")
+@general_template(route="/", title="Index")
 def index() -> rx.Component:
     return rx.vstack(
         rx.text(

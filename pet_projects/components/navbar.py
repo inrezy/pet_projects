@@ -36,9 +36,14 @@ def navbar() -> rx.Component:
         ),
         rx.hstack(
             rx.button(
-                "Index Page",
+                "Index",
                 variant='soft',
                 on_click=rx.redirect("/")
+            ),
+            rx.button(
+                "About",
+                variant='soft',
+                on_click=rx.redirect("/about")
             ),
             rx.menu.root(
                 rx.menu.trigger(
@@ -70,7 +75,7 @@ def navbar() -> rx.Component:
                 ),
                 on_change=set_color_mode,
                 variant='classic',
-                radius='large',
+                radius='medium',
                 value=color_mode
             ),
             align='center'
