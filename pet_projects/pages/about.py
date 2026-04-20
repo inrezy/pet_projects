@@ -2,6 +2,8 @@ import reflex as rx
 
 from ..templates import general_template
 
+from ..config import SOCIAL_LINKS
+
 
 @general_template(route="/about", title="About")
 def about() -> rx.Component:
@@ -33,12 +35,12 @@ def about() -> rx.Component:
                     rx.button(
                         "GitHub",
                         variant='outline',
-                        on_click=rx.redirect("https://github.com/inrezy/pet_projects")
+                        on_click=rx.redirect(SOCIAL_LINKS["github"])
                     ),
                     rx.button(
                         "Telegram",
                         variant='outline',
-                        on_click=rx.redirect("https://t.me/inrezy")
+                        on_click=rx.redirect(SOCIAL_LINKS["telegram"])
                     )
                 ),
             ),
