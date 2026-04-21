@@ -1,9 +1,7 @@
-import random
-
 import reflex as rx
 from reflex.style import set_color_mode, color_mode
 
-from ..config import CATEGORIES, TOTAL_PAGES, KAOMOJIS
+from ..config import CATEGORIES, TOTAL_PAGES
 
 
 def _menu_content() -> rx.Component:
@@ -26,11 +24,10 @@ def navbar() -> rx.Component:
     return rx.flex(
         rx.tooltip(
             rx.text(
-                random.choice(KAOMOJIS),
+                "PPC",
                 size='8',
-                weight='bold',
-                color_scheme='iris',
-                as_='span'
+                weight='medium',
+                color_scheme='iris'
             ),
             content="2026. Made by inrezy."
         ),
